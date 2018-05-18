@@ -131,7 +131,11 @@ class Ridgepole::Diff
     pk_attrs = build_primary_key_attrs_if_changed(from, to, table_name)
     if pk_attrs
       if @options[:allow_pk_change]
-        table_delta[:primary_key_definition] = {change: {id: pk_attrs}}
+        table_delta[:primary_key_definition] = {
+          change: {
+            from.fetch(:primary_key, :id).to_s.to_sym => pk_attrs
+          }
+        }
       else
         @logger.warn(<<-EOS)
 [WARNING] Primary key definition of `#{table_name}` differ but `allow_pk_change` option is false
